@@ -58,6 +58,49 @@
 
 ---
 
+## Virtualization & VM Options
+
+The channel doesn't have heavy VM discussion, but here's what's been covered and what makes sense:
+
+### Docker (Most Common Non-Bare-Metal Approach)
+- **Synology NAS**: William runs OpenClaw gateway via pre-built Docker image with `.env` config
+- **Jetson/ARM devices**: Yanko Aleksandrov uses Docker with volume mounts for skill persistence
+- **Gotchas**: Skill installation issues, UID/permission mismatches on ARM, volume mounting required for persistence
+
+```yaml
+# Example Docker volume config (from Yanko):
+volumes:
+  - ./skills:/home/openclaw/skills
+```
+
+### VPS / Cloud VMs
+- **Providers**: Any VPS running Ubuntu Server works (DigitalOcean, Hetzner, Linode, AWS Lightsail)
+- **Minimum specs**: 1-2 vCPU, 2GB RAM, 20GB disk (gateway-only with API models)
+- **OS**: Ubuntu Server 22.04/24.04 LTS
+- **Use case**: Always-on remote gateway, especially if you don't want hardware at home
+- **Security note**: SeñorCarlos emphasizes "the limitation won't be hardware, it'll be security architecture discipline"
+
+### VMware / Proxmox / Hyper-V (Home Lab)
+Not explicitly discussed in the channel, but logically:
+- **Proxmox on a Beelink/NUC**: Run Ubuntu VM for OpenClaw + other VMs for isolation
+- **GPU passthrough**: Required if you want local model inference inside a VM (NVIDIA GPUs)
+- **Apple Silicon**: No VM option for macOS-on-macOS that passes through unified memory efficiently. Run bare metal.
+- **Windows + WSL2**: Works but adds overhead and complexity. Just install Ubuntu directly.
+
+### When to Use VMs vs Bare Metal
+| Scenario | Recommendation |
+|----------|---------------|
+| **Mac Mini/Studio** | Bare metal macOS — no reason to virtualize |
+| **Beelink/NUC for OpenClaw only** | Bare metal Ubuntu — simplest |
+| **Beelink/NUC multi-purpose** | Proxmox + Ubuntu VM for isolation |
+| **Existing NAS** | Docker container |
+| **Cloud/remote** | VPS with Ubuntu Server |
+| **Security isolation needed** | Separate VMs or separate devices (SeñorCarlos's "blast radius" advice) |
+
+**Bottom line**: Most OpenClaw users run bare metal. Docker is the go-to for containerized deployments. Full VMs are overkill unless you're running a home lab with multiple services and want isolation.
+
+---
+
 ## Detailed Analysis
 
 ### 1. Apple Mac Mini M4
