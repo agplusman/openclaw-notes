@@ -1,0 +1,23 @@
+# Private / workspace files — do NOT push
+MEMORY.md
+SOUL.md
+USER.md
+AGENTS.md
+IDENTITY.md
+TOOLS.md
+HEARTBEAT.md
+BOOTSTRAP.md
+memory/
+downloads/
+canvas/
+.DS_Store
+.clawdhub/
+
+# Projects are their own repos
+projects/
+
+# Prediction markets repo (submodule or standalone)
+prediction-markets/
+
+# Skills (may contain local config)
+skills/
